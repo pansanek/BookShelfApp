@@ -1,8 +1,6 @@
 package ru.potemkin.bookshelfapp.ui
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -14,6 +12,7 @@ import retrofit2.HttpException
 import ru.potemkin.bookshelfapp.BooksApplication
 import ru.potemkin.bookshelfapp.data.Book
 import ru.potemkin.bookshelfapp.data.BooksRepository
+import ru.potemkin.bookshelfapp.data.SearchWidgetState
 import java.io.IOException
 
 sealed interface BooksUiState {
@@ -29,6 +28,21 @@ class BooksViewModel(
     var booksUiState: BooksUiState by mutableStateOf(BooksUiState.Loading)
         private set
 
+    private val _searchWidgetState: MutableState<SearchWidgetState> =
+        mutableStateOf(value = SearchWidgetState.CLOSED)
+    val searchWidgetState: State<SearchWidgetState> = _searchWidgetState
+
+    private val _searchTextState: MutableState<String> =
+        mutableStateOf(value = "")
+    val searchTextState: State<String> = _searchTextState
+
+    fun updateSearchWidgetState(newValue: SearchWidgetState) {
+        _searchWidgetState.value = newValue
+    }
+
+    fun updateSearchTextState(newValue: String) {
+        _searchTextState.value = newValue
+    }
 
     init {
         getBooks()
